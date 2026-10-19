@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Einwand-Karussell</title>
+  <meta name="description" content="Trainingsspiel für Setter und Closer: Hebel ziehen, Einwand hören, spontan antworten.">
+  <!-- theme-color muss zur Primärfarbe in styles.css und manifest.webmanifest passen -->
+  <meta name="theme-color" content="#1F3A5F">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Karussell">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+
+  <div class="app" id="app">
+    <header class="app-header">
+      <button class="brand" id="btn-home" type="button" aria-label="Zur Startseite">
+        <img class="brand-logo" src="assets/logo.svg" alt="" width="32" height="32">
+        <span class="brand-name">Einwand-Karussell</span>
+      </button>
+      <button class="icon-btn" id="btn-nav" type="button" aria-label="Einstellungen und Statistik">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" id="nav-icon-settings">
+          <path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6a.5.5 0 0 0 .1-.6l-1.9-3.3a.5.5 0 0 0-.6-.2l-2.4 1a7.4 7.4 0 0 0-1.7-1l-.4-2.5a.5.5 0 0 0-.5-.4h-3.8a.5.5 0 0 0-.5.4l-.4 2.5a7.4 7.4 0 0 0-1.7 1l-2.4-1a.5.5 0 0 0-.6.2L2.6 8.8a.5.5 0 0 0 .1.6l2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6a.5.5 0 0 0-.1.6l1.9 3.3c.1.2.4.3.6.2l2.4-1c.5.4 1.1.7 1.7 1l.4 2.5c0 .2.3.4.5.4h3.8c.3 0 .5-.2.5-.4l.4-2.5c.6-.3 1.2-.6 1.7-1l2.4 1c.2.1.5 0 .6-.2l1.9-3.3a.5.5 0 0 0-.1-.6l-2-1.6ZM12 15.5A3.5 3.5 0 1 1 12 8.500a3.500 3.500 0 0 1 0 7Z"/>
+        </svg>
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false" id="nav-icon-close" hidden>
+          <path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </header>
+
+    <main id="main">
+
+      <!-- ============ 1. START ============ -->
+      <section class="screen" id="screen-start" data-screen="start" aria-labelledby="start-title">
+        <h1 id="start-title" tabindex="-1">Einwand-Karussell</h1>
+        <p class="lead">Zieh den Hebel, hör den Einwand, antworte spontan laut. Im Team macht das Üben mehr Spaß und es bleibt besser hängen.</p>
+
+        <div class="practice-banner" id="start-practice" hidden>
+          <p><strong>Übungsmodus:</strong> Es kommen nur Einwände dran, die du mit „Muss ich üben“ markiert hast.</p>
+          <button class="btn btn-secondary btn-small" type="button" data-action="end-practice">Übungsmodus beenden</button>
+        </div>
+
+        <fieldset class="field" id="field-rolle-start">
+          <legend>Deine Rolle</legend>
+          <div class="seg" data-seg="rolle"></div>
+        </fieldset>
+
+        <fieldset class="field" id="field-diff-start">
+          <legend>Schwierigkeit</legend>
+          <div class="seg" data-seg="schwierigkeit"></div>
+        </fieldset>
+
+        <p class="pool-info" id="pool-info" role="status"></p>
+
+        <button class="btn btn-primary btn-xl" id="btn-start" type="button">Los geht’s</button>
+        <button class="btn btn-link" type="button" data-action="open-settings">Einstellungen &amp; Statistik</button>
+      </section>
+
+      <!-- ============ 2. AUTOMAT ============ -->
+      <section class="screen" id="screen-game" data-screen="game" aria-labelledby="game-title" hidden>
+        <h2 class="sr-only" id="game-title" tabindex="-1">Runde</h2>
+
+        <div class="status-row">
+          <p class="who" id="who" hidden>Dran ist: <strong id="who-name"></strong></p>
+          <p class="practice-chip" id="game-practice" hidden>
+            <span>Übungsmodus</span>
+            <button class="chip-btn" type="button" data-action="end-practice">Beenden</button>
+          </p>
+        </div>
+
+        <div class="machine" id="machine">
+          <div class="machine-body" id="reels">
+            <div class="reel-block" data-reel="phase">
+              <p class="reel-label" id="lbl-phase">Gesprächsphase</p>
+              <div class="reel" aria-hidden="true"><div class="reel-strip"></div><span class="reel-flash"></span></div>
+            </div>
+            <div class="reel-block" data-reel="einwand">
+              <p class="reel-label" id="lbl-einwand">Einwand</p>
+              <div class="reel" aria-hidden="true"><div class="reel-strip"></div><span class="reel-flash"></span></div>
+            </div>
+            <div class="reel-block" data-reel="verstaerker">
+              <p class="reel-label" id="lbl-verstaerker">Verstärker</p>
+              <div class="reel" aria-hidden="true"><div class="reel-strip"></div><span class="reel-flash"></span></div>
+            </div>
+          </div>
+
+          <!-- Hebel: Tippen oder nach unten ziehen. Für Tastatur/Screenreader gibt es den Button „Drehen“. -->
+          <div class="lever" id="lever" aria-hidden="true">
+            <div class="lever-track"></div>
+            <div class="lever-base"></div>
+            <div class="lever-arm"></div>
+            <div class="lever-ball"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-accent btn-xl" id="btn-spin" type="button">Drehen</button>
+        <p class="hint">Oder zieh den Hebel rechts nach unten.</p>
+        <button class="btn btn-link" id="btn-reopen" type="button" hidden>Letzte Karte öffnen</button>
+      </section>
+
+      <!-- ============ 5. EINSTELLUNGEN & STATISTIK ============ -->
+      <section class="screen" id="screen-settings" data-screen="settings" aria-labelledby="settings-title" hidden>
+        <h1 id="settings-title" tabindex="-1">Einstellungen</h1>
+
+        <fieldset class="field">
+          <legend>Rolle</legend>
+          <div class="seg" data-seg="rolle"></div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Schwierigkeit</legend>
+          <div class="seg" data-seg="schwierigkeit"></div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Timer für die Antwort</legend>
+          <div class="seg" data-seg="timer"></div>
+        </fieldset>
+
+        <div class="switches">
+          <label class="switch-row" for="set-zweiwalzen">
+            <span class="switch-text">Nur 2 Walzen<small>Einwand + Verstärker, ohne Gesprächsphase</small></span>
+            <input type="checkbox" role="switch" id="set-zweiwalzen" data-setting="zweiWalzen">
+            <span class="switch-ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch-row" for="set-sound">
+            <span class="switch-text">Sound<small>Klickern beim Drehen, „Ding“ beim Stopp</small></span>
+            <input type="checkbox" role="switch" id="set-sound" data-setting="sound">
+            <span class="switch-ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch-row" for="set-vibration">
+            <span class="switch-text">Vibration<small>Nur auf Geräten, die das unterstützen</small></span>
+            <input type="checkbox" role="switch" id="set-vibration" data-setting="vibration">
+            <span class="switch-ui" aria-hidden="true"></span>
+          </label>
+        </div>
+
+        <h2>Team-Modus</h2>
+        <div class="switches">
+          <label class="switch-row" for="set-team">
+            <span class="switch-text">„Wer ist dran?“<small>Nach jedem Dreh kommt reihum jemand dran</small></span>
+            <input type="checkbox" role="switch" id="set-team" data-setting="teamModus">
+            <span class="switch-ui" aria-hidden="true"></span>
+          </label>
+          <label class="switch-row" for="set-peer">
+            <span class="switch-text">Peer-Feedback<small>Drei Kriterien zum mündlichen Abhaken</small></span>
+            <input type="checkbox" role="switch" id="set-peer" data-setting="peerFeedback">
+            <span class="switch-ui" aria-hidden="true"></span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="field-label" for="set-namen">Namen (durch Komma getrennt)</label>
+          <input class="text-input" type="text" id="set-namen" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Anna, Ben, Chris">
+          <p class="field-help">Wird nur auf diesem Gerät gespeichert.</p>
+        </div>
+
+        <h2>Statistik</h2>
+        <div class="stats" id="stats">
+          <p class="stat-big"><span id="stat-spins">0</span> <span class="stat-big-label">Dreher</span></p>
+
+          <h3>Deine Selbstbewertungen</h3>
+          <ul class="bars" id="stat-bars">
+            <li><span class="bars-label">Sicher</span><span class="bars-track"><span class="bars-fill" data-fill="sicher"></span></span><span class="bars-count" data-count="sicher">0</span></li>
+            <li><span class="bars-label">Geht so</span><span class="bars-track"><span class="bars-fill" data-fill="mittel"></span></span><span class="bars-count" data-count="mittel">0</span></li>
+            <li><span class="bars-label">Muss ich üben</span><span class="bars-track"><span class="bars-fill" data-fill="ueben"></span></span><span class="bars-count" data-count="ueben">0</span></li>
+          </ul>
+
+          <h3>„Muss ich üben“</h3>
+          <ul class="practice-list" id="practice-list"></ul>
+          <p class="field-help" id="practice-empty">Noch nichts markiert. Nach jeder Runde kannst du dich selbst bewerten.</p>
+          <button class="btn btn-primary" type="button" id="btn-practice" data-action="start-practice">Nur diese üben</button>
+
+          <button class="btn btn-danger" type="button" id="btn-reset">Statistik zurücksetzen</button>
+        </div>
+
+        <p class="privacy">Alles bleibt auf deinem Gerät. Es gibt kein Tracking und keine Server-Verbindung.</p>
+        <p class="version" id="version"></p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============ 3. ERGEBNIS-KARTE ============ -->
+  <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+    <div class="sheet-grip" aria-hidden="true"></div>
+    <div class="sheet-body">
+      <p class="who-line" id="sheet-who" hidden>Dran ist: <strong id="sheet-who-name"></strong></p>
+
+      <div class="chip-row">
+        <span class="chip chip-phase" id="sheet-phase"></span>
+        <span class="ampel" id="sheet-ampel">
+          <span class="ampel-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span id="sheet-ampel-text"></span>
+        </span>
+      </div>
+      <p class="level-note" id="sheet-level-note" hidden>Ziel: sauber qualifizieren, nicht überreden.</p>
+
+      <h2 class="quote" id="sheet-title" tabindex="-1"></h2>
+      <p class="context-chip" id="sheet-verst"></p>
+      <p class="draft-note" id="sheet-draft" hidden>Entwurf, noch nicht abgestimmt</p>
+
+      <div class="timer" id="timer-box">
+        <div class="timer-row">
+          <span class="timer-time" id="timer-time" aria-hidden="true">0:30</span>
+          <button class="btn btn-secondary" type="button" id="btn-timer">Antwort starten</button>
+        </div>
+        <div class="timer-bar" aria-hidden="true"><div class="timer-fill" id="timer-fill"></div></div>
+        <p class="timer-note" id="timer-note" role="status"></p>
+      </div>
+
+      <div class="reveal-row">
+        <button class="btn btn-secondary" type="button" id="btn-tip" aria-expanded="false" aria-controls="panel-tip">Tipp zeigen</button>
+      </div>
+
+      <div class="panel" id="panel-tip" hidden>
+        <h3>Was steckt dahinter?</h3>
+        <p id="tip-text"></p>
+      </div>
+
+      <fieldset class="rating" id="rating">
+        <legend>Wie sicher warst du?</legend>
+        <div class="rating-row">
+          <button class="rate-btn" type="button" data-rate="sicher" aria-pressed="false"><span class="rate-emoji" aria-hidden="true">👍</span><span>Sicher</span></button>
+          <button class="rate-btn" type="button" data-rate="mittel" aria-pressed="false"><span class="rate-emoji" aria-hidden="true">😐</span><span>Geht so</span></button>
+          <button class="rate-btn" type="button" data-rate="ueben" aria-pressed="false"><span class="rate-emoji" aria-hidden="true">😅</span><span>Muss ich üben</span></button>
+        </div>
+        <p class="field-help" id="rating-last"></p>
+      </fieldset>
+
+      <fieldset class="peer" id="peer" hidden>
+        <legend>Peer-Feedback (mündlich abhaken)</legend>
+        <label class="check"><input type="checkbox"><span>Empathie</span></label>
+        <label class="check"><input type="checkbox"><span>Klarheit</span></label>
+        <label class="check"><input type="checkbox"><span>Weiterführung zum nächsten Schritt</span></label>
+      </fieldset>
+    </div>
+
+    <div class="sheet-actions">
+      <button class="btn btn-primary" type="button" id="btn-again">Nochmal drehen</button>
+      <button class="btn btn-secondary" type="button" id="btn-back">Zurück</button>
+    </div>
+  </div>
+
+  <div class="update-bar" id="update-bar" role="status" hidden>
+    <span>Neue Version bereit.</span>
+    <button class="btn btn-small btn-accent" type="button" id="btn-update">Neu laden</button>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <div class="sr-only" id="live" role="status" aria-live="polite"></div>
+
+  <noscript><p style="padding:16px">Für das Einwand-Karussell wird JavaScript benötigt.</p></noscript>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
